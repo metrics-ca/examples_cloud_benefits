@@ -1,0 +1,34 @@
+name: db-link
+tasks:
+  - name: comp
+    mdc_work: ./
+    compute_size: s4
+    commands:
+      - dvhcom +acc+b -vhdl2008 -lib work -f filelist.txt
+      - dvlcom +acc+b +incdir+./source/+./dbg_link/sv_sim/sv/ ./dbg_link/sv_sim/sv/*.sv
+      - dsim -genimage image -timescale 1ns/1ps -linebuf -lib work -top work.tb_top
+    outputs:
+      working:
+        - name: everything
+          path: /
+  - name: run1
+    depends: [comp]
+    fanout:
+      name: seed
+      type: sequence
+      from: 0
+      to: 31
+    mdc_work: ./
+    compute_size: s4
+    commands:
+      - dsim -image image -sv_seed $(fanout.seed) -l logs/dsim$(fanout.seed).log
+    inputs:
+      working:
+        - name: comp.everything
+          path: /
+    outputs:
+      artifacts:
+        - name: sim_log
+          path: logs
+        - name: env_file
+          path: dsim.env

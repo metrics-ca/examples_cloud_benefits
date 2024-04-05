@@ -1,0 +1,68 @@
+---------------
+--  Test  IO write and read. 00
+--    check read data
+---------------
+
+DEFINE_VAR CNT 0
+DEFINE_VAR RATE 3200
+DEFINE_VAR DATA 0
+
+RESET_SYS
+
+--LOOP 4
+
+-- set the rate
+RATE_SET $RATE
+
+
+WAIT_CYCS  100
+RX_OUT x55       --  sync
+
+WAIT_CYCS  10000
+RX_OUT x14       --  read status
+WAIT_WORDS 3
+
+WAIT_CYCS  10000
+
+RX_OUT x14       --  read status
+WAIT_WORDS 3
+
+RX_OUT x10       -- control reg write
+RX_OUT xaa
+WAIT_CYCS  3000
+
+RX_OUT x18      -- write user reg
+RX_OUT x33
+WAIT_CYCS  3000
+
+RX_OUT x19
+WAIT_WORDS 3
+
+--  write 64 words (16 bit) to IO
+RX_OUT xff   --  write to IO address 
+RX_OUT x00
+RX_OUT x00
+
+LOOP 128
+  RX_OUT $DATA
+  ADD_VAR DATA 1
+END_LOOP
+
+
+WAIT_CYCS  60000
+-- read back 64 words
+RX_OUT xbf  --  read back IO  address
+RX_OUT x00
+RX_OUT x00
+
+EQU_VAR DATA 0
+LOOP 128
+  WAIT_TX
+  VERIFY $DATA
+  ADD_VAR DATA 1
+END_LOOP
+
+WAIT_WORDS 7
+
+
+FINISH

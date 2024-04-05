@@ -1,0 +1,5 @@
+./dbg_link/vhdl/cpu_pkg.vhd
+./dbg_link/vhdl/dbg_link_pkg.vhd
+./dbg_link/vhdl/dbg_link.vhd
+./dbg_link/vhdl/sram_4kx16.vhd
+./dbg_link/vhdl/debug_sys.vhd

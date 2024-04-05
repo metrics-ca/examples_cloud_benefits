@@ -1,0 +1,108 @@
+---------------
+--  this test runs each of the link commands
+--  resets the link rate and starts a new rate.
+---------------
+
+DEFINE_VAR CNT 0      "Running controls.stm ...
+DEFINE_VAR RATE 3200  -- modify this line to change duration of the test
+DEFINE_VAR DATA 0
+
+RESET_SYS
+
+LOOP 4
+
+-- set the rate
+RATE_SET $RATE
+
+
+WAIT_CYCS  100
+RX_OUT x55       --  sync
+
+WAIT_CYCS  10000
+RX_OUT x14       --  read status
+WAIT_WORDS 3
+
+WAIT_CYCS  10000
+
+RX_OUT x14       --  read status
+WAIT_WORDS 3
+
+RX_OUT x10       -- control reg write
+RX_OUT xaa
+WAIT_CYCS  3000
+
+RX_OUT x18      -- write user reg
+RX_OUT x33
+WAIT_CYCS  3000
+
+RX_OUT x19
+WAIT_WORDS 3
+
+RX_OUT xc2   --  write to IO address 
+RX_OUT x00
+RX_OUT x00
+RX_OUT x36
+RX_OUT x63
+RX_OUT xaa
+RX_OUT xaa
+RX_OUT xbb
+RX_OUT xbb
+
+WAIT_CYCS  60000
+RX_OUT x82  --  read back IO  address
+RX_OUT x00
+RX_OUT x00
+
+WAIT_TX
+VERIFY x36
+WAIT_TX
+VERIFY x63
+WAIT_TX
+VERIFY xaa
+WAIT_TX
+VERIFY xaa
+WAIT_TX
+VERIFY xbb
+WAIT_TX
+VERIFY xbb
+
+--WAIT_WORDS 7
+
+
+RX_OUT xc9   --  write to IO address 
+RX_OUT x00
+RX_OUT x00
+
+LOOP 10
+  RX_OUT $CNT
+  ADD_VAR CNT 1
+  RX_OUT $CNT
+  ADD_VAR CNT 1
+END_LOOP
+
+WAIT_CYCS  60000
+RX_OUT x89  --  read back IO  address
+RX_OUT x00
+RX_OUT x00
+
+LOOP 20
+  WAIT_TX
+  VERIFY $DATA
+  ADD_VAR DATA 1
+END_LOOP
+--WAIT_WORDS 24
+
+WAIT_CYCS  20000
+
+-- reset the link
+RX_OUT x10       -- control reg write
+RX_OUT x01
+WAIT_CYCS  3000
+
+--  Change the rate
+ADD_VAR RATE 2000
+
+END_LOOP
+
+
+FINISH

@@ -1,0 +1,20 @@
+---
+# Note: The contents of this file are automatically generated.
+# Any changes made by hand may be overwritten.
+version: '0.1'
+design_root_dir: .
+work_dir: .
+mdc_workspace_dir: .
+simulations:
+  - name: sim0
+    options: +acc+b -lib work -top work.tb_top -sv_seed 0 -l dsim0.log -waves sim0.mxd
+source_files:
+  - language: vhdl
+    path: filelist.txt
+    options: +acc+b -vhdl2008
+    file_list: relative-to-file
+  - language: verilog
+    path: dbg_link/sv_sim/sv/*.sv
+    options: +acc+b +incdir+./source/+./sv/
+library_search_paths:
+  - $STD_LIBS/ieee08

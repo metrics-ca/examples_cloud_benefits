@@ -12,7 +12,7 @@ dvhcom +acc+b -vhdl2008 -lib work -f filelist.txt
 
 dvlcom +acc+b +incdir+.\source\+.\sv\ dbg_link\sv_sim\sv\*.sv
 
-dsim +acc+b -lib work -top work.tb_top -gen_image image
+dsim +acc+b -lib work -top work.tb_top -genimage image
 
 $end_time = Get-Date -UFormat %s
 Write-Host "Build time was $([int]$end_time - [int]$start_time) seconds."

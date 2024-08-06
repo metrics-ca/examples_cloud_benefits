@@ -10,7 +10,7 @@ tasks:
     outputs:
       working:
         - name: everything
-          path: /
+          path: ./
   - name: run1
     depends: [comp]
     fanout:
@@ -25,7 +25,7 @@ tasks:
     inputs:
       working:
         - name: comp.everything
-          path: /
+          path: ./
     outputs:
       artifacts:
         - name: sim_log
